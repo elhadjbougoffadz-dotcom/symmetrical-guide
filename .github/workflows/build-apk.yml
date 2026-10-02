@@ -29,7 +29,7 @@ jobs:
           mkdir -p engine/app/src/main/assets
           printf '%s\n' "require 'import'" "import 'com.alhaj.almudhakira.MemoService'" "service = MemoService(activity)" > engine/app/src/main/assets/main.lua
           tail -n +2 source/require_part01.lua >> engine/app/src/main/assets/main.lua
-          cat source/require_part02.lua source/require_part03.lua source/local_part01.lua source/local_part02.lua source/local_part03.lua >> engine/app/src/main/assets/main.lua
+          cat source/require_part02.lua source/require_part03.lua source/require_part04.lua source/local_part01.lua source/local_part02.lua source/local_part03.lua source/local_part04.lua >> engine/app/src/main/assets/main.lua
           cp project/init.lua engine/app/src/main/assets/init.lua
           mkdir -p engine/app/src/main/res/drawable
           cp project/icon.xml engine/app/src/main/res/drawable/icon.xml
