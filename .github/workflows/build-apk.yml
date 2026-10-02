@@ -66,8 +66,12 @@ jobs:
       - name: Build APK
         working-directory: engine
         run: |
-          chmod +x gradlew
-          ./gradlew --no-daemon assembleDebug
+          cd ..
+          wget -q https://services.gradle.org/distributions/gradle-4.4.1-bin.zip
+          unzip -q gradle-4.4.1-bin.zip
+          export PATH="$PWD/gradle-4.4.1/bin:$PATH"
+          cd engine
+          gradle --no-daemon assembleDebug
       - uses: actions/upload-artifact@v4
         with:
           name: almudhakira-001
