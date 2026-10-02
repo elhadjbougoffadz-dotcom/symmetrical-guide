@@ -13,12 +13,17 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 8
+          java-version: 17
       - uses: android-actions/setup-android@v3
       - name: Install Android dependencies
         run: |
           yes | sdkmanager --licenses >/dev/null || true
           sdkmanager "platform-tools" "platforms;android-28" "build-tools;28.0.3" "ndk;20.1.5948944"
+      - name: Switch to Java 8 for legacy Gradle
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 8
       - name: Get AndroLua engine
         run: git clone --depth 1 https://github.com/nirenr/AndroLua_pro.git engine
       - name: Assemble project
