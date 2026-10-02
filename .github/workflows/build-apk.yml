@@ -28,6 +28,10 @@ jobs:
           java-version: 8
       - name: Get AndroLua engine
         run: git clone --depth 1 https://github.com/nirenr/AndroLua_pro.git engine
+      - name: Select legacy NDK
+        run: |
+          unset ANDROID_NDK_HOME
+          echo "ndk.dir=$ANDROID_HOME/ndk/20.1.5948944" > engine/local.properties
       - name: Assemble project
         run: |
           cp project/Main.java engine/app/src/main/java/com/androlua/Main.java
