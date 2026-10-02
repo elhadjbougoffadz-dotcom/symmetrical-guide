@@ -53,6 +53,9 @@ jobs:
           from pathlib import Path
           p=Path("engine/app/build.gradle")
           s=p.read_text().replace('applicationId "com.androlua"','applicationId "com.alhaj.almudhakira"')
+          s=s.replace("""dependencies {
+    implementation 'com.android.support:support-annotations:28.0.0'
+}""", "")
           p.write_text(s)
           p=Path("engine/app/src/main/AndroidManifest.xml")
           s=p.read_text()
