@@ -37,6 +37,7 @@ jobs:
           echo "ndk.dir=$ANDROID_HOME/ndk/20.1.5948944" > engine/local.properties
       - name: Assemble project
         run: |
+          rm -rf engine/app/src/main/java/android/support/annotation
           cp project/Main.java engine/app/src/main/java/com/androlua/Main.java
           mkdir -p engine/app/src/main/java/com/alhaj/almudhakira
           cp project/MemoService.java engine/app/src/main/java/com/alhaj/almudhakira/MemoService.java
@@ -53,7 +54,7 @@ jobs:
           from pathlib import Path
           p=Path("engine/app/build.gradle")
           s=p.read_text().replace('applicationId "com.androlua"','applicationId "com.alhaj.almudhakira"')
-          s=s.replace("implementation 'com.android.support:support-annotations:28.0.0'", "")
+          s=s.replace("implementation 'com.android.support:support-annotations:28.0.0'", "implementation 'com.android.support:support-annotations:28.0.0'")
           p.write_text(s)
           p=Path("engine/app/src/main/AndroidManifest.xml")
           s=p.read_text()
