@@ -28,6 +28,9 @@ jobs:
           java-version: 8
       - name: Get AndroLua engine
         run: git clone --depth 1 https://github.com/nirenr/AndroLua_pro.git engine
+      - name: Prepare legacy NDK
+        run: |
+          cp engine/app/src/main/jni/Android.mk engine/app/src/main/jni/android.mk
       - name: Select legacy NDK
         run: |
           unset ANDROID_NDK_HOME
