@@ -64,12 +64,14 @@ public class MemoService extends ContextWrapper {
         final String value=text==null?"":text;
         try{
             if(tts==null){
-                tts=new TextToSpeech(host.getApplicationContext(),status->{
-                    try{
-                        tts.setLanguage(Locale.getDefault());
-                        if(android.os.Build.VERSION.SDK_INT>=21) tts.speak(value,TextToSpeech.QUEUE_FLUSH,null,"almudhakira");
-                        else tts.speak(value,TextToSpeech.QUEUE_FLUSH,null);
-                    }catch(Exception ignored){}
+                tts=new TextToSpeech(host.getApplicationContext(), new TextToSpeech.OnInitListener() {
+                    @Override public void onInit(int status) {
+                        try {
+                            tts.setLanguage(Locale.getDefault());
+                            if(android.os.Build.VERSION.SDK_INT>=21) tts.speak(value,TextToSpeech.QUEUE_FLUSH,null,"almudhakira");
+                            else tts.speak(value,TextToSpeech.QUEUE_FLUSH,null);
+                        } catch(Exception ignored) {}
+                    }
                 });
             }else{
                 if(android.os.Build.VERSION.SDK_INT>=21) tts.speak(value,TextToSpeech.QUEUE_FLUSH,null,"almudhakira");
