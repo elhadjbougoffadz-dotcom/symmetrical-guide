@@ -53,7 +53,7 @@ jobs:
           p.write_text(s)
           p=Path("engine/app/src/main/AndroidManifest.xml")
           s=p.read_text()
-          s=s.replace('package="com.androlua"','package="com.alhaj.almudhakira"')
+          s=s.replace('package="com.alhaj.almudhakira"','package="com.androlua"')
           s=s.replace('android:versionCode="4402"','android:versionCode="1"')
           s=s.replace('android:versionName="4.4.2"','android:versionName="001"')
           s=s.replace('android:label="AndroLua+"','android:label="📖 المذكرة الذكية 📖"')
