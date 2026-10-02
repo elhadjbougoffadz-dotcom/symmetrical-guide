@@ -65,7 +65,9 @@ jobs:
           PY
       - name: Build APK
         working-directory: engine
-        run: ./gradlew --no-daemon assembleDebug
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon assembleDebug
       - uses: actions/upload-artifact@v4
         with:
           name: almudhakira-001
