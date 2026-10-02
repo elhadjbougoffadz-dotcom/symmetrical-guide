@@ -1,0 +1,66 @@
+name: Build APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 8
+      - uses: android-actions/setup-android@v3
+      - name: Install Android dependencies
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platform-tools" "platforms;android-28" "build-tools;28.0.3" "ndk;20.1.5948944"
+      - name: Get AndroLua engine
+        run: git clone --depth 1 https://github.com/nirenr/AndroLua_pro.git engine
+      - name: Assemble project
+        run: |
+          cp project/Main.java engine/app/src/main/java/com/androlua/Main.java
+          mkdir -p engine/app/src/main/java/com/alhaj/almudhakira
+          cp project/MemoService.java engine/app/src/main/java/com/alhaj/almudhakira/MemoService.java
+          mkdir -p engine/app/src/main/assets
+          printf '%s\n' "require 'import'" "import 'com.alhaj.almudhakira.MemoService'" "service = MemoService(activity)" > engine/app/src/main/assets/main.lua
+          tail -n +2 source/require_part01.lua >> engine/app/src/main/assets/main.lua
+          cat source/require_part02.lua source/require_part03.lua source/local_part01.lua source/local_part02.lua source/local_part03.lua >> engine/app/src/main/assets/main.lua
+          cp project/init.lua engine/app/src/main/assets/init.lua
+          mkdir -p engine/app/src/main/res/drawable
+          cp project/icon.xml engine/app/src/main/res/drawable/icon.xml
+      - name: Configure package
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path("engine/app/build.gradle")
+          s=p.read_text().replace('applicationId "com.androlua"','applicationId "com.alhaj.almudhakira"')
+          p.write_text(s)
+          p=Path("engine/app/src/main/AndroidManifest.xml")
+          s=p.read_text()
+          s=s.replace('package="com.androlua"','package="com.alhaj.almudhakira"')
+          s=s.replace('android:versionCode="4402"','android:versionCode="1"')
+          s=s.replace('android:versionName="4.4.2"','android:versionName="001"')
+          s=s.replace('android:label="AndroLua+"','android:label="📖 المذكرة الذكية 📖"')
+          s=s.replace('android:authorities="com.androlua"','android:authorities="com.alhaj.almudhakira"')
+          main='<activity\n            android:name="com.androlua.Main"'
+          s=s.replace(main,main+'\n            android:exported="true"',1)
+          old='''<intent-filter>\n                <action android:name="android.intent.action.MAIN" />\n                <category android:name="android.intent.category.LAUNCHER" />\n            </intent-filter>'''
+          s=s.replace(old,'',1)
+          marker='''            <intent-filter>\n                <action android:name="android.intent.action.VIEW" />'''
+          launcher='''            <intent-filter>\n                <action android:name="android.intent.action.MAIN" />\n                <category android:name="android.intent.category.LAUNCHER" />\n            </intent-filter>\n'''
+          s=s.replace(marker,launcher+marker,1)
+          p.write_text(s)
+          PY
+      - name: Build APK
+        working-directory: engine
+        run: ./gradlew --no-daemon assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: almudhakira-001
+          path: engine/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
